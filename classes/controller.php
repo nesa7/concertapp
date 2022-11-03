@@ -168,7 +168,7 @@ class controller
             $concert_statement->close();
 
 
-            $artist_statement = $this->db->mysqli->prepare("SELECT artist.artist_name
+            $artist_statement = $this->db->mysqli->prepare("SELECT artist.artist_name, artist.artist_id
             FROM artist, concert, performs 
             WHERE concert.concert_id = ?
             AND artist.artist_id = performs.artist_id
@@ -177,8 +177,23 @@ class controller
             $artist_statement->execute();
             $artist_result = $artist_statement->get_result();
             $artists = $artist_result->fetch_all();
-
             $artist_statement->close();
+
+            $all_songs = array();
+            foreach ($artists as $each_artist) {
+                $song_per_artist = $this->db->mysqli->prepare("SELECT song.song_name
+                FROM song, artist, in_setlist
+                WHERE song.artist_id = artist.artist_id
+                AND artist.artist_id = ?
+                AND song.song_id = in_setlist.song_id
+                AND in_setlist.concert_id = ?");
+                $song_per_artist->bind_param('ii', $each_artist[1], $concert_id);
+                $song_per_artist->execute();
+                $song_result = $song_per_artist->get_result();
+                $song_list = $song_result->fetch_all();
+                $all_songs[$each_artist[1]] = $song_list;
+                $song_per_artist->close();
+            }
 
         }
 

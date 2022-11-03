@@ -20,9 +20,14 @@
     <br>
     <br>
 
+    
     <p>Artists:
     <?php foreach ($artists as $each_artist): ?>
-        <p>&emsp;<?php echo $each_artist[0]; ?>
+        <p>&emsp;<?php echo $each_artist[0]; ?>  - 
+        <?php foreach ($all_songs[$each_artist[1]] as $songs): ?>
+            <?php echo $songs[0]; ?>&nbsp;&nbsp;&nbsp;
+        <?php endforeach ?>
+        <br>
     <?php endforeach ?>
 
     <div align="left">
