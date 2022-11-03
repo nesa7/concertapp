@@ -32,6 +32,12 @@ class controller
             case "home":
                 $this->home();
                 break;
+            case "createconcert":
+                $this->createConcertFunc();
+                break;
+            case "viewconcert":
+                $this->viewConcertFunc();
+                break;
             default:
                 $this->login();
                 break;
@@ -90,8 +96,91 @@ class controller
     // Loads and sorts the posts by newest, and displays them as a home page.
     private function home()
     {
+        // get list of concerts to display on home page
+        $list_of_concerts = $this->db->query("SELECT * FROM concert");
         
-
         include("templates/home.php");
     }
+
+    private function addConcert($venue_id, $tour_name, $concert_name, $date_time) 
+    {
+
+        $statementfirst = $this->db->mysqli->prepare("SELECT MAX(concert_id)+1 FROM concert");
+        $statementfirst->execute();
+        $statementfirst->bind_result($result);
+        $statementfirst->fetch();
+        $statementfirst->close();
+
+        $statement = $this->db->mysqli->prepare("INSERT INTO concert (concert_id, venue_id, tour_name, concert_name, date_time) VALUES (?, ?, ?, ?, ?)");
+        $statement -> bind_param("iisss", $result, $venue_id, $tour_name, $concert_name, $date_time);
+        $statement -> execute();
+        $statement->close();
+
+
+    }
+
+
+    private function createConcertFunc()
+    {
+
+        $recent_data = null; // not used unless submission fails
+        $display_error = false;
+
+        // pass in a list of venues to be displayed in the dropdown
+        $list_of_venues = $this->db->query("SELECT venue_id, venue_name FROM venue");
+
+        // an intermediary page to handle new concert submission issues
+        // if a venue has not been selected...
+        if (isset($_POST["concert_name"])) {
+            if ($_POST['venue_id']  == "") {
+                $display_error = true;
+                // save entered data to repopulate these fields
+                $recent_data['concert_name'] = $_POST['concert_name'];
+                $recent_data['tour_name'] = $_POST['tour_name'];
+                $recent_data['date_time'] = $_POST['date_time'];
+            } 
+            else {
+                $display_error = false;
+                $this->addConcert($_POST['venue_id'], $_POST['tour_name'], $_POST['concert_name'], $_POST['date_time']);
+                header ("Location: ?command=home"); // redirect to simpleform.php page after submission
+            }
+        }
+        
+        include("templates/createConcert.php");
+    }
+
+
+    private function viewConcertFunc() {
+        if (isset($_POST["concert_to_view"])) {
+            $concert_id = $_POST["concert_to_view"];
+
+            $concert_statement = $this->db->mysqli->prepare("SELECT concert.concert_name, venue.venue_name, concert.tour_name, concert.date_time
+            FROM concert, venue 
+            WHERE concert.concert_id = ?
+            AND concert.venue_id = venue.venue_id");
+            $concert_statement->bind_param('i', $concert_id);
+            $concert_statement->execute();
+            $result = $concert_statement->get_result();
+            $concert_info = $result->fetch_assoc();
+            $concert_statement->close();
+
+
+            $artist_statement = $this->db->mysqli->prepare("SELECT artist.artist_name
+            FROM artist, concert, performs 
+            WHERE concert.concert_id = ?
+            AND artist.artist_id = performs.artist_id
+            AND concert.concert_id = performs.concert_id");
+            $artist_statement->bind_param('s', $concert_id);
+            $artist_statement->execute();
+            $artist_result = $artist_statement->get_result();
+            $artists = $artist_result->fetch_all();
+
+            $artist_statement->close();
+
+        }
+
+        include("templates/viewConcert.php");
+    }
+
+
 }
