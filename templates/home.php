@@ -11,14 +11,11 @@
     <script src="https://cdn.jsdelivr.net/npm/less@4"></script>
 
 
-
+<br>
+<div class="container" style="padding:3px">
 <h1 class="d-table-cell">Concert book</h1>
-<div style="display:flex; justify-content:flex-end; width:100%; padding:0;">
-<!-- button to add a new concert -->
-<div class="container" align="right">
-<button onclick="window.location.href='?command=createconcert'">Add a Concert</button>
-</div>
-</div>
+<br>
+
 
 
 <!-- list all concerts by name on the home page -->
@@ -35,5 +32,6 @@
      </td>
 <?php endforeach; ?>
 
+</div>
 
 </html>
