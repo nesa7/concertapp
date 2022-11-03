@@ -70,6 +70,13 @@
         </form>
     </div>
 
+    <div>
+        <form action="?command=deleteconcert" method="POST">
+            <button onclick="window.location.href='?command=deleteconcert'" class="btn btn-danger">Delete Concert</button>
+            <input type="hidden" name="concert_to_delete" value="<?php echo $concert_info['concert_id']; ?>" />
+        </form>
+    </div>
+
 </div>
 
 

@@ -41,6 +41,9 @@ class controller
             case "addartist":
                 $this->addArtistFunc();
                 break;
+            case "deleteconcert":
+                $this->deleteConcertFunc();
+                break;
             default:
                 $this->login();
                 break;
@@ -258,5 +261,18 @@ class controller
         include("templates/addArtist.php");
     }
 
+
+    private function deleteConcertFunc() {
+        if (isset($_POST["concert_to_delete"])) {
+            $concert_id = $_POST["concert_to_delete"];
+
+            $delete_concert_statement = $this->db->mysqli->prepare("DELETE FROM concert WHERE concert.concert_id = ?");
+            $delete_concert_statement->bind_param('i', $concert_id);
+            $delete_concert_statement->execute();
+            $delete_concert_statement->close();
+        }
+
+        header("Location: ?command=home");
+    }
 
 }
