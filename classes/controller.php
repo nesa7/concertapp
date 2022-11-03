@@ -38,6 +38,9 @@ class controller
             case "viewconcert":
                 $this->viewConcertFunc();
                 break;
+            case "addartist":
+                $this->addArtistFunc();
+                break;
             default:
                 $this->login();
                 break;
@@ -154,7 +157,7 @@ class controller
         if (isset($_POST["concert_to_view"])) {
             $concert_id = $_POST["concert_to_view"];
 
-            $concert_statement = $this->db->mysqli->prepare("SELECT concert.concert_name, venue.venue_name, concert.tour_name, concert.date_time
+            $concert_statement = $this->db->mysqli->prepare("SELECT concert.concert_id, concert.concert_name, venue.venue_name, concert.tour_name, concert.date_time
             FROM concert, venue 
             WHERE concert.concert_id = ?
             AND concert.venue_id = venue.venue_id");
@@ -180,6 +183,64 @@ class controller
         }
 
         include("templates/viewConcert.php");
+    }
+
+
+    private function addArtistQuery($concert_id, $artist_name, $artist_genre_1, $artist_genre_2) {
+            $statementfirst = $this->db->mysqli->prepare("SELECT MAX(artist_id)+1 FROM artist");
+            $statementfirst->execute();
+            $statementfirst->bind_result($result);
+            $statementfirst->fetch();
+            $statementfirst->close();
+
+
+            // create new artist
+            $add_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist (artist_id, artist_name) VALUES (?, ?)");
+            $add_artist_statement->bind_param('is', $result, $artist_name);
+            $add_artist_statement->execute();
+            $add_artist_statement->close();
+
+            // link artist to concert
+            $link_artist_statement = $this->db->mysqli->prepare("INSERT INTO performs (artist_id, concert_id) VALUES (?, ?)");
+            $link_artist_statement->bind_param('ii', $result, $concert_id);
+            $link_artist_statement->execute();
+            $link_artist_statement->close();
+
+            // specify artist genres
+            $genre1_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist_genre (artist_id, genre) VALUES (?, ?)");
+            $genre1_artist_statement->bind_param('is', $result, $artist_genre_1);
+            $genre1_artist_statement->execute();
+            $genre1_artist_statement->close();
+
+            $genre2_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist_genre (artist_id, genre) VALUES (?, ?)");
+            $genre2_artist_statement->bind_param('is', $result, $artist_genre_2);
+            $genre2_artist_statement->execute();
+            $genre2_artist_statement->close();
+    }
+
+    private function addArtistFunc() {
+        if (isset($_POST['this_concert'])) {
+            $concert_id = $_POST['this_concert'];
+
+            $this_concert_statement = $this->db->mysqli->prepare("SELECT concert.concert_name, concert.concert_id
+            FROM concert 
+            WHERE concert.concert_id = ?");
+            $this_concert_statement->bind_param('s', $concert_id);
+            $this_concert_statement->execute();
+            $concert_artist_result = $this_concert_statement->get_result();
+            $concert_name = $concert_artist_result->fetch_assoc();
+
+            $this_concert_statement->close();
+        }
+
+        if (isset($_POST['artist_name'])) {
+            $this->addArtistQuery($_POST['this_concert'], $_POST['artist_name'], $_POST['genre_1'], $_POST['genre_2']);
+
+            header("Location: ?command=home");
+        }
+
+
+        include("templates/addArtist.php");
     }
 
 

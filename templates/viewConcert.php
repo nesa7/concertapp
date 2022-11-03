@@ -25,6 +25,15 @@
         <p>&emsp;<?php echo $each_artist[0]; ?>
     <?php endforeach ?>
 
+    <div align="left">
+        <br>
+        <br>
+        <form action="?command=addartist" method="POST">
+            <button onclick="window.location.href='?command=addartist'">Add Artist</button>
+            <input type="hidden" name="this_concert" value="<?php echo $concert_info['concert_id']; ?>" />
+        </form>
+    </div>
+
 </div>
 
 
