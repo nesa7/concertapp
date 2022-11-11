@@ -44,6 +44,8 @@ class controller
             case "deleteconcert":
                 $this->deleteConcertFunc();
                 break;
+            case "entersong":
+                $this->enterSongFunc();
             default:
                 $this->login();
                 break;
@@ -157,6 +159,7 @@ class controller
 
 
     private function viewConcertFunc() {
+
         if (isset($_POST["concert_to_view"])) {
             $concert_id = $_POST["concert_to_view"];
 
@@ -273,6 +276,15 @@ class controller
         }
 
         header("Location: ?command=home");
+    }
+
+    private function enterSongFunc() {
+        if (isset($_POST["current_artist"])) {
+            $artist_id = $_POST["current_artist"];
+            print_r($_POST);
+        }
+
+        //header("Location: ?command=home");
     }
 
 }
