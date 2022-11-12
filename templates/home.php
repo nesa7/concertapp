@@ -18,10 +18,11 @@
 
 
 
+<ul class="blockdesc">
 <!-- list all concerts by name on the home page -->
 <?php foreach ($list_of_concerts as $concert_info): ?>
   <td>
-        <!-- eventually add "action" here to link to specific concert and more information -->
+    <li class="desc">
         <form action="?command=viewconcert" method="post">
           <input type="submit" value="<?php echo $concert_info['concert_name']; ?>" name="btnViewConcert" class="btn btn-link" 
                 title="Click to view this concert" />  
@@ -29,8 +30,10 @@
                 value="<?php echo $concert_info['concert_id']; ?>"
           />            
         </form>
-     </td>
+    </li>
+  </td>
 <?php endforeach; ?>
+</ul>
 
 </div>
 

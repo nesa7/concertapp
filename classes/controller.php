@@ -187,7 +187,7 @@ class controller
 
             $all_songs = array();
             foreach ($artists as $each_artist) {
-                $song_per_artist = $this->db->mysqli->prepare("SELECT song.song_name
+                $song_per_artist = $this->db->mysqli->prepare("SELECT song.song_name, song.song_id
                 FROM song, artist, in_setlist
                 WHERE song.artist_id = artist.artist_id
                 AND artist.artist_id = ?
@@ -199,6 +199,30 @@ class controller
                 $song_list = $song_result->fetch_all();
                 $all_songs[$each_artist[1]] = $song_list;
                 $song_per_artist->close();
+            }
+
+
+            $all_albums = array();
+            foreach ($all_songs as $song_list) {
+                foreach ($song_list as $a_song) {
+                    $album_per_artist = $this->db->mysqli->prepare("SELECT album.album_id, album.album_name, song.artist_id
+                    FROM album, song
+                    WHERE album.album_id = song.album_id
+                    AND song.song_id = ?");
+                    $album_per_artist->bind_param('i', $a_song[1]);
+                    $album_per_artist->execute();
+                    $album_result = $album_per_artist->get_result();
+                    $album_list = $album_result->fetch_all();
+                    if (!empty($album_list)) {
+                        $all_albums[$album_list[0][0]] = $album_list;
+                    }
+                    $album_per_artist->close();
+                }
+            }
+
+            foreach ($all_albums as $album) {
+                print_r($album);
+                echo '<br/>';
             }
 
         }

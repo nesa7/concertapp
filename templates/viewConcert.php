@@ -207,6 +207,15 @@
 
     <input type="text" placeholder="Enter Song Name" name="song_name" required>
 
+    <input type="text" list="albums" placeholder="Enter Album Name" />
+    <datalist id="albums">
+        <?php foreach ($all_albums as $album): ?>
+                <!-- ugh... how to filter by album per artist!!!! -->
+                <option><?php echo $album[0][1]; ?></option>&nbsp;&nbsp;&nbsp;
+                <br>
+        <?php endforeach ?>
+    </datalist>
+
     <button type="submit" class="btn">Submit</button>
     <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
     <input type="hidden" name="current_artist" id="this_artist" />
