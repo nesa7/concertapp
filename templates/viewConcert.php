@@ -166,8 +166,8 @@
                             <br>
                         <?php endforeach ?>
                         <br>
-                            <button onclick="openForm(this.value)" class="btn btn-primary" title="Add a song" value="<?php echo $each_artist[0]; ?>">+</button>
-                            <input type="hidden" name="this_artist_id" id="passartist" value="<?php echo $each_artist[1]; ?>" />
+                            <button onclick="openForm(this.value, this.id)" class="btn btn-primary" title="Add a song" value="<?php echo $each_artist[0]; ?>" id="<?php echo $each_artist[1]; ?>">+</button>
+                        <br>
                     </div>
 
                 <?php endforeach ?>
@@ -233,11 +233,10 @@
     });
     }
 
-    function openForm(val) {
+    function openForm(val, id) {
         document.getElementById("myForm").style.display = "block";
         document.getElementById("myformartist").innerHTML = val;
-        // set new form's artist value equal to the artist value passed from button click?
-        document.querySelector("#this_artist").value = document.querySelector("#passartist").value;
+        document.querySelector("#this_artist").value = id;
     }
 
     function closeForm() {

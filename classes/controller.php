@@ -278,13 +278,35 @@ class controller
         header("Location: ?command=home");
     }
 
+    private function addSongQuery($song_name, $artist_id, $concert_id) {
+        $statementfirst = $this->db->mysqli->prepare("SELECT MAX(song_id)+1 FROM song");
+        $statementfirst->execute();
+        $statementfirst->bind_result($result);
+        $statementfirst->fetch();
+        $statementfirst->close();
+
+        // create new song
+        // CURRENTLY NO ALBUM SPECIFIED...
+        $add_song_statement = $this->db->mysqli->prepare("INSERT INTO song (song_id, song_name, artist_id) VALUES (?, ?, ?)");
+        $add_song_statement->bind_param('isi', $result, $song_name, $artist_id);
+        $add_song_statement->execute();
+        $add_song_statement->close();
+
+        // link song to concert
+        $link_song_concert_statement = $this->db->mysqli->prepare("INSERT INTO in_setlist (song_id, concert_id) VALUES (?, ?)");
+        $link_song_concert_statement->bind_param('ii', $result, $concert_id);
+        $link_song_concert_statement->execute();
+        $link_song_concert_statement->close();
+
+    }
+
     private function enterSongFunc() {
         if (isset($_POST["current_artist"])) {
-            $artist_id = $_POST["current_artist"];
-            print_r($_POST);
-        }
 
-        //header("Location: ?command=home");
+            $this->addSongQuery($_POST['song_name'], $_POST['current_artist'], $_POST['current_concert']);
+
+            header("Location: ?command=home");
+        }
     }
 
 }
