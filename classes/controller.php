@@ -220,10 +220,6 @@ class controller
                 }
             }
 
-            foreach ($all_albums as $album) {
-                print_r($album);
-                echo '<br/>';
-            }
 
         }
 
@@ -326,6 +322,8 @@ class controller
 
     private function enterSongFunc() {
         if (isset($_POST["current_artist"])) {
+            //print_r($_POST['album_name']);
+            //print_r($_POST['album_date']);
 
             $this->addSongQuery($_POST['song_name'], $_POST['current_artist'], $_POST['current_concert']);
 
