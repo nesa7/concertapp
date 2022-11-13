@@ -220,6 +220,11 @@ class controller
                 }
             }
 
+            // foreach ($all_albums as $a_album) {
+            //     print_r($a_album);
+            //     print_r($a_album[0][1]);
+            // }
+
 
         }
 
@@ -298,19 +303,61 @@ class controller
         header("Location: ?command=home");
     }
 
-    private function addSongQuery($song_name, $artist_id, $concert_id) {
+    private function addSongQuery($song_name, $artist_id, $concert_id, $album_name) {
+
+        // get id for new song
         $statementfirst = $this->db->mysqli->prepare("SELECT MAX(song_id)+1 FROM song");
         $statementfirst->execute();
         $statementfirst->bind_result($result);
         $statementfirst->fetch();
         $statementfirst->close();
 
-        // create new song
-        // CURRENTLY NO ALBUM SPECIFIED...
-        $add_song_statement = $this->db->mysqli->prepare("INSERT INTO song (song_id, song_name, artist_id) VALUES (?, ?, ?)");
-        $add_song_statement->bind_param('isi', $result, $song_name, $artist_id);
-        $add_song_statement->execute();
-        $add_song_statement->close();
+        // --------------------------HANDLE ALBUM STUFF---------------------------
+        $album_name = trim($album_name);
+
+        // check if NO album name specified
+        if ($album_name == " " || $album_name == "") {
+            // do not specify album_id for the new song
+            // CREATE NEW SONG WITH NO CONNECTED ALBUM
+            $add_song_statement = $this->db->mysqli->prepare("INSERT INTO song (song_id, song_name, artist_id) VALUES (?, ?, ?)");
+            $add_song_statement->bind_param('isi', $result, $song_name, $artist_id);
+            $add_song_statement->execute();
+            $add_song_statement->close();
+        }
+        else {
+            // search for album_name:
+            $statementalbum = $this->db->mysqli->prepare("SELECT album.album_id FROM album WHERE album.album_name = ?");
+            $statementalbum->bind_param('s', $album_name);
+            $statementalbum->execute();
+            $statementalbum->bind_result($resultAlbum);
+            $statementalbum->fetch();
+            $statementalbum->close();
+
+            // album already saved in db!
+            if ($resultAlbum != "") {
+                $newAlbumId = $resultAlbum;
+            }
+            else {
+                // create a new album
+                $getAlbumId = $this->db->mysqli->prepare("SELECT MAX(album_id)+1 FROM album");
+                $getAlbumId->execute();
+                $getAlbumId->bind_result($newAlbumId);
+                $getAlbumId->fetch();
+                $getAlbumId->close();
+
+                $add_album = $this->db->mysqli->prepare("INSERT INTO album (album_id, album_name, artist_id) VALUES (?, ?, ?)");
+                $add_album->bind_param('isi', $newAlbumId, $album_name, $artist_id);
+                $add_album->execute();
+                $add_album->close();
+            }
+
+            // CREATE NEW SONG WITH A SELECTED ALBUM
+            $add_song_statement = $this->db->mysqli->prepare("INSERT INTO song (song_id, song_name, artist_id, album_id) VALUES (?, ?, ?, ?)");
+            $add_song_statement->bind_param('isii', $result, $song_name, $artist_id, $newAlbumId);
+            $add_song_statement->execute();
+            $add_song_statement->close();
+
+        }
 
         // link song to concert
         $link_song_concert_statement = $this->db->mysqli->prepare("INSERT INTO in_setlist (song_id, concert_id) VALUES (?, ?)");
@@ -322,10 +369,11 @@ class controller
 
     private function enterSongFunc() {
         if (isset($_POST["current_artist"])) {
+            //print_r("ALBUM NAME HERE");
             //print_r($_POST['album_name']);
             //print_r($_POST['album_date']);
 
-            $this->addSongQuery($_POST['song_name'], $_POST['current_artist'], $_POST['current_concert']);
+            $this->addSongQuery($_POST['song_name'], $_POST['current_artist'], $_POST['current_concert'], $_POST['album_name']);
 
             header("Location: ?command=home");
         }

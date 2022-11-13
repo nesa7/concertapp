@@ -207,17 +207,14 @@
 
     <input type="text" placeholder="Song name" name="song_name" required>
 
-    <input type="text" oninput='onInput()' id="albumid" name="album_name" list="albums" placeholder="Album name" autocomplete="off" />
+    <input type="text" id="albumid" name="album_name" list="albums" placeholder="Album name" autocomplete="off" multiple="multiple" />
     <datalist id="albums">
-        <option value=" "></option>
         <?php foreach ($all_albums as $album): ?>
                 <!-- ugh... how to filter by album per artist!!!! -->
-                <option value=<?php echo $album[0][1]; ?>></option>&nbsp;&nbsp;&nbsp;
+                <option><?php echo $album[0][1]; ?></option>&nbsp;&nbsp;&nbsp;
                 <br>
         <?php endforeach ?>
     </datalist>
-
-    <input type="text" id="albumDate" placeholder="Album release date" name="album_date">
 
     <button type="submit" class="btn">Submit</button>
     <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
@@ -254,24 +251,6 @@
     function closeForm() {
         document.getElementById("myForm").style.display = "none";
     }
-
-    function onInput() {
-        var val = document.getElementById("albumid").value;
-        var opts = document.getElementById('albums').childNodes;
-        var x = document.getElementById("albumDate");
-        for (var i = 0; i < opts.length; i++) {
-            if (opts[i].value === val) {
-                if (val == " ") {
-                    x.style.display = "block";
-                }
-                else {
-                    x.style.display = "none";
-                }
-                
-                break;
-            }
-        }
-  }
 
 </script>
 
