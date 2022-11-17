@@ -251,6 +251,10 @@
                     <!-- https://www.w3schools.com/howto/howto_js_collapsible.asp -->
                     <button type="button" class="collapsible"><?php echo $each_artist[0]; ?></button>
                     <div class="content">
+                        <?php foreach ($all_genres[$each_artist[1]] as $genre): ?>
+                            <b><span title="Genre" style="color:#0D7D6A"><?php echo $genre[0]; ?></span></b>
+                            <br>
+                        <?php endforeach ?>
                         <?php foreach ($all_songs[$each_artist[1]] as $songs): ?>
                             <br>
                             <?php echo $songs[0]; ?>&nbsp;&nbsp;&nbsp;

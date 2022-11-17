@@ -192,7 +192,18 @@ class controller
             $artist_statement->close();
 
             $all_songs = array();
+            $all_genres = array();
             foreach ($artists as $each_artist) {
+                $genre_per_artist = $this->db->mysqli->prepare("SELECT artist_genre.genre
+                FROM artist_genre
+                WHERE artist_genre.artist_id = ?");
+                $genre_per_artist->bind_param('i', $each_artist[1]);
+                $genre_per_artist->execute();
+                $genre_result = $genre_per_artist->get_result();
+                $genre_list = $genre_result->fetch_all();
+                $all_genres[$each_artist[1]] = $genre_list;
+                $genre_per_artist->close();
+
                 $song_per_artist = $this->db->mysqli->prepare("SELECT song.song_name, song.song_id
                 FROM song, artist, in_setlist
                 WHERE song.artist_id = artist.artist_id
@@ -234,12 +245,6 @@ class controller
             $check_liked_result = $check_liked->get_result();
             $liked = $check_liked_result->fetch_all();
             $check_liked->close();
-
-            // foreach ($all_albums as $a_album) {
-            //     print_r($a_album);
-            //     print_r($a_album[0][1]);
-            // }
-
 
         }
 
