@@ -89,6 +89,7 @@
 
 </style>
 
+<!-- like button source: https://get.foundation/building-blocks/blocks/button-like.html -->
 <form action="?command=handlelike" method="POST">
     <button id="heartButton" onclick="window.location.href='?command=handlelike'" class="button button-like">
         <i class="fa fa-heart"></i>
