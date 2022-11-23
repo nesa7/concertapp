@@ -46,7 +46,7 @@
                   </div>
                   <div class="col-3">
                       <p class="text-center" style="top:50%">
-                        <?php echo substr($concert_info['date_time'], 0, 10); ?>
+                       @ <?php echo substr($concert_info['date_time'], 0, 10); ?>
                       </p>
                   </div>
                   <div class="col-3">
