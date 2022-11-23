@@ -13,13 +13,14 @@
 
 <br>
 <div class="container" style="padding:3px">
-<h1 class="d-table-cell">Concert book</h1>
+<h1 class="text-center">Concert book</h1>
 <br>
 
 
 
 <ul class="blockdesc">
-<!-- list all concerts by name on the home page -->
+<!-- list all concerts by name on the home page 
+
 <?php foreach ($list_of_concerts as $concert_info): ?>
   <td>
     <li class="desc">
@@ -33,7 +34,30 @@
     </li>
   </td>
 <?php endforeach; ?>
-</ul>
+</ul> -->
+
+<div class="row justify-content-center">
+  <div class="col-6">
+    <?php foreach ($list_of_concerts as $concert_info): ?>
+         
+              <div class="row" style="background-color: white; border: 1px solid #e5ebf0;" onclick="location.href='?command=viewconcert&id=<?= $concert_info['concert_id'] ?>'">
+                  <div class="col-5">
+                      <h4><?php echo $concert_info['concert_name']; ?></h4>
+                  </div>
+                  <div class="col-3">
+                      <p class="text-center" style="top:50%">
+                        <?php echo substr($concert_info['date_time'], 0, 10); ?>
+                      </p>
+                  </div>
+                  <div class="col-3">
+                      <form name="like" method="post" action="">
+                          <input class="btn btn-primary float-end" type="submit" value="Like"/>
+                      </form>
+                  </div>
+              
+          </div>
+          <?php endforeach; ?>
+  </div>
 
 </div>
 

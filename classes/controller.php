@@ -162,9 +162,8 @@ class controller
 
 
     private function viewConcertFunc() {
-
-        if (isset($_POST["concert_to_view"])) {
-            $concert_id = $_POST["concert_to_view"];
+        if (isset($_GET["id"])) {
+            $concert_id = $_GET["id"];
 
             $concert_statement = $this->db->mysqli->prepare("SELECT concert.concert_id, concert.concert_name, venue.venue_name, concert.tour_name, concert.date_time
             FROM concert, venue 
@@ -296,6 +295,20 @@ class controller
     private function deleteConcertFunc() {
         if (isset($_POST["concert_to_delete"])) {
             $concert_id = $_POST["concert_to_delete"];
+            $delete_concert_statement = $this->db->mysqli->prepare("DELETE FROM in_setlist WHERE in_setlist.concert_id = ?");
+            $delete_concert_statement->bind_param('i', $concert_id);
+            $delete_concert_statement->execute();
+            $delete_concert_statement->close();
+
+            $delete_concert_statement = $this->db->mysqli->prepare("DELETE FROM likes WHERE likes.concert_id = ?");
+            $delete_concert_statement->bind_param('i', $concert_id);
+            $delete_concert_statement->execute();
+            $delete_concert_statement->close();
+
+            $delete_concert_statement = $this->db->mysqli->prepare("DELETE FROM performs WHERE performs.concert_id = ?");
+            $delete_concert_statement->bind_param('i', $concert_id);
+            $delete_concert_statement->execute();
+            $delete_concert_statement->close();
 
             $delete_concert_statement = $this->db->mysqli->prepare("DELETE FROM concert WHERE concert.concert_id = ?");
             $delete_concert_statement->bind_param('i', $concert_id);

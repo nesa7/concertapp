@@ -142,7 +142,12 @@
     </tr>
     <tr>
         <td class="col-md-2">Tour </td>
+        <?php if (is_null($concert_info["tour_name"])): ?>
+        <td><i>This concert is not a part of a tour.<i><td>
+        <?php else : ?>
         <td><?php echo $concert_info['tour_name']; ?></td>
+        <?php endif; ?>
+
     </tr>
     <tr>
         <td class="col-md-2">Date </td>
