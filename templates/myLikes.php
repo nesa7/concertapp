@@ -23,13 +23,13 @@
     You don't have any likes.
 <?php else: ?>
     <?php foreach ($result as $liked_concert): ?>
-        <form action="?command=viewconcert" method="post">
-          <input type="submit" value="<?php echo $liked_concert[0]; ?>" name="btnViewConcert" class="btn btn-link" 
-                title="Click to view this concert" />  
-          <input type="hidden" name="concert_to_view" 
-                value="<?php echo $liked_concert[1]; ?>"
-          />            
-        </form>
+
+        <div class="row" style="background-color: white; border: 1px solid #e5ebf0;" onclick="location.href='?command=viewconcert&id=<?= $liked_concert[1] ?>'">
+            <div class="col-5">
+                        <h4><?php echo $liked_concert[0]; ?></h4>
+            </div>
+        </div>
+
     <?php endforeach ?>
 <?php endif ?>
 
