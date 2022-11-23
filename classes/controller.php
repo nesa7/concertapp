@@ -46,6 +46,12 @@ class controller
                 break;
             case "entersong":
                 $this->enterSongFunc();
+            case "mylikes":
+                $this->likesFunc();
+                break;
+            case "handlelike":
+                $this->handleLikeFunc();
+                break;
             default:
                 $this->login();
                 break;
@@ -188,7 +194,18 @@ class controller
             $artist_statement->close();
 
             $all_songs = array();
+            $all_genres = array();
             foreach ($artists as $each_artist) {
+                $genre_per_artist = $this->db->mysqli->prepare("SELECT artist_genre.genre
+                FROM artist_genre
+                WHERE artist_genre.artist_id = ?");
+                $genre_per_artist->bind_param('i', $each_artist[1]);
+                $genre_per_artist->execute();
+                $genre_result = $genre_per_artist->get_result();
+                $genre_list = $genre_result->fetch_all();
+                $all_genres[$each_artist[1]] = $genre_list;
+                $genre_per_artist->close();
+
                 $song_per_artist = $this->db->mysqli->prepare("SELECT song.song_name, song.song_id
                 FROM song, artist, in_setlist
                 WHERE song.artist_id = artist.artist_id
@@ -222,11 +239,14 @@ class controller
                 }
             }
 
-            // foreach ($all_albums as $a_album) {
-            //     print_r($a_album);
-            //     print_r($a_album[0][1]);
-            // }
-
+            //check if the concert is liked by this user
+            $username = $_SESSION["username"];
+            $check_liked = $this->db->mysqli->prepare("SELECT * FROM likes WHERE username = ? AND concert_id = ?");
+            $check_liked->bind_param('si', $username, $concert_info['concert_id']);
+            $check_liked->execute();
+            $check_liked_result = $check_liked->get_result();
+            $liked = $check_liked_result->fetch_all();
+            $check_liked->close();
 
         }
 
@@ -390,14 +410,50 @@ class controller
 
     private function enterSongFunc() {
         if (isset($_POST["current_artist"])) {
-            //print_r("ALBUM NAME HERE");
-            //print_r($_POST['album_name']);
-            //print_r($_POST['album_date']);
 
             $this->addSongQuery($_POST['song_name'], $_POST['current_artist'], $_POST['current_concert'], $_POST['album_name']);
 
             header("Location: ?command=home");
         }
+    }
+
+    private function likesFunc() {
+        $username = $_SESSION["username"];
+
+        $getLikes = $this->db->mysqli->prepare("SELECT concert.concert_name, concert.concert_id FROM likes NATURAL JOIN concert WHERE likes.username = ?");
+        $getLikes->bind_param('s', $username);
+        $getLikes->execute();
+        $likes_result = $getLikes->get_result();
+        $result = $likes_result->fetch_all();
+        $getLikes->close();
+
+        include("templates/myLikes.php");
+    }
+
+    private function handleLikeFunc() {
+        if (isset($_POST['current_concert'])) {
+            $concert_id = $_POST['current_concert'];
+            $liked = $_POST['liked'];
+            $username = $_SESSION["username"];
+
+            // like concert
+            if (!empty($liked)) {
+                //print_r("liked empty");
+                $add_like = $this->db->mysqli->prepare("INSERT INTO likes (username, concert_id) VALUES (?, ?)");
+                $add_like->bind_param('si', $username, $concert_id);
+                $add_like->execute();
+                $add_like->close();
+            }
+            else {
+                // unlike concert
+                //print_r("liked not empty");
+                $del_like = $this->db->mysqli->prepare("DELETE FROM likes WHERE username = ? AND concert_id = ?");
+                $del_like->bind_param('si', $username, $concert_id);
+                $del_like->execute();
+                $del_like->close();
+            }
+        }
+        header("Location: ?command=mylikes");
     }
 
 }

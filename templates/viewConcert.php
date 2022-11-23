@@ -9,10 +9,102 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/less@4"></script>
+    <script src="https://kit.fontawesome.com/a146c2d6ac.js" crossorigin="anonymous"></script>
 
 <div class="container">
 <br>
 <h2><?php echo $concert_info['concert_name']; ?></h2>
+
+<style>
+.button-like {
+  border: 2px solid #8a8a8a;
+  background-color: transparent;
+  text-decoration: none;
+  padding: 1rem;
+  position: relative;
+  vertical-align: middle;
+  text-align: center;
+  display: inline-block;
+  border-radius: 3rem;
+  color: #8a8a8a;
+  transition: all ease 0.4s;
+}
+
+.button-like span {
+  margin-left: 0.5rem;
+}
+
+.button-like .fa,
+.button-like span {
+  transition: all ease 0.4s;
+}
+
+.button-like:focus {
+  background-color: transparent;
+}
+
+.button-like:focus .fa,
+.button-like:focus span {
+  color: #8a8a8a;
+}
+
+.button-like:hover {
+  border-color: #cc4b37;
+  background-color: transparent;
+}
+
+.button-like:hover .fa,
+.button-like:hover span {
+  color: #cc4b37;
+}
+
+.liked {
+  background-color: #cc4b37;
+  border-color: #cc4b37;
+}
+
+.liked .fa,
+.liked span {
+  color: #fefefe;
+}
+
+.liked:focus {
+  background-color: #cc4b37;
+}
+
+.liked:focus .fa,
+.liked:focus span {
+  color: #fefefe;
+}
+
+.liked:hover {
+  background-color: #cc4b37;
+  border-color: #cc4b37;
+}
+
+.liked:hover .fa,
+.liked:hover span {
+  color: #fefefe;
+}
+
+</style>
+
+<!-- like button source: https://get.foundation/building-blocks/blocks/button-like.html -->
+<form action="?command=handlelike" method="POST">
+    <button id="heartButton" onclick="window.location.href='?command=handlelike'" class="button button-like">
+        <i class="fa fa-heart"></i>
+        <span>Like</span>
+    </button>
+    <input type="hidden" name="current_concert" value="<?php echo $concert_info['concert_id']; ?>" />
+    <input type="hidden" name="liked" value="<?php echo empty($liked); ?>" />
+</form>
+
+<script>
+    var heart = document.getElementById("heartButton");
+    <?php if (!empty($liked)): ?>
+        heart.classList.add("liked");
+    <?php endif ?>
+</script>
 
 
     <style>
@@ -169,6 +261,10 @@
                     <!-- https://www.w3schools.com/howto/howto_js_collapsible.asp -->
                     <button type="button" class="collapsible"><?php echo $each_artist[0]; ?></button>
                     <div class="content">
+                        <?php foreach ($all_genres[$each_artist[1]] as $genre): ?>
+                            <b><span title="Genre" style="color:#0D7D6A"><?php echo $genre[0]; ?></span></b>
+                            <br>
+                        <?php endforeach ?>
                         <?php foreach ($all_songs[$each_artist[1]] as $songs): ?>
                             <br>
                             <?php echo $songs[0]; ?>&nbsp;&nbsp;&nbsp;
