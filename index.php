@@ -13,8 +13,9 @@ if (isset($_GET["command"])) {
 }
 
 if (!$helper->isLoggedIn()) {
-    if ($command === "register") {
+    if ($command === "register" or $command === "login") {
     } else {
+        $command = "register";
     }
 } else {
 }

@@ -62,13 +62,16 @@ class controller
             if ($data === false) {
                 $error_msg = "Error checking for user";
             } else if (!empty($data)) {
-                if (password_verify($_POST["password"], $data[0]["password"])) {
+                $test1 = $data[0]["password"];
+                $test2 = $_POST["password"];
+                if (password_verify($test2, $test1)) {
                     $_SESSION["username"] = $data[0]["username"];
                     $_SESSION["userid"] = $data[0]["userid"];
 
                     header("Location: ?command=home");
                 } else {
                     $error_msg = "Wrong password";
+                    echo("broken");
                 }
             }
         }
