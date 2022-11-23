@@ -108,7 +108,7 @@ class controller
     private function home()
     {
         // get list of concerts to display on home page
-        $list_of_concerts = $this->db->query("SELECT * FROM concert");
+        $list_of_concerts = $this->db->query("CALL `getConcerts`();");
         
         include("templates/home.php");
     }
@@ -264,6 +264,11 @@ class controller
             $genre2_artist_statement->bind_param('is', $result, $artist_genre_2);
             $genre2_artist_statement->execute();
             $genre2_artist_statement->close();
+
+            $statement = $this->db->mysqli->prepare("CALL `getConcerts`();");
+            $statement->execute();
+            $statement->close();
+
     }
 
     private function addArtistFunc() {
