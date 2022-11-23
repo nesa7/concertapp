@@ -131,7 +131,7 @@
             .form-container .btn:hover, .open-button:hover {
             opacity: 1;
             }
-
+    
     </style>
 
 <table class="alpha w3-table w3-bordered w3-card-4 center">
@@ -160,6 +160,10 @@
         <table class="beta w3-table w3-bordered w3-card-4" align="left" style="width:70%">
             <tr>
             <td>
+                <?php if (count($artists)==0): ?>
+                <td><i>Unknown.<i><td>
+                <?php else : ?>
+                
                 <?php foreach ($artists as $each_artist): ?>
 
                     <!-- https://www.w3schools.com/howto/howto_js_collapsible.asp -->
@@ -176,6 +180,7 @@
                     </div>
 
                 <?php endforeach ?>
+                <?php endif; ?>
             </td>
             </tr>
             </table>
