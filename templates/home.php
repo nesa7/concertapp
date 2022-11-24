@@ -50,8 +50,10 @@
                       </p>
                   </div>
                   <div class="col-3">
-                      <form name="like" method="post" action="">
+                      <form name="like" method="post" action="?command=handlelike">
                           <input class="btn btn-primary float-end" type="submit" value="Like"/>
+                          <input type="hidden" name="current_concert" value="<?php echo $concert_info['concert_id']; ?>" />
+                          <input type="hidden" name="liked" value="<?php echo empty($liked); ?>" />
                       </form>
                   </div>
               

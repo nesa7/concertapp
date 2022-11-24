@@ -452,6 +452,7 @@ class controller
                 $del_like->execute();
                 $del_like->close();
             }
+        
         }
         header("Location: ?command=mylikes");
     }
