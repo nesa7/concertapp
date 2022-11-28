@@ -1,7 +1,7 @@
 <?php
     class helper {
     public function isLoggedIn() {
-        return isset($_SESSION["email"]);
+        return isset($_SESSION["username"]);
     }
     
     public function addMessage($message) {
