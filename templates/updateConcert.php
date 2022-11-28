@@ -54,7 +54,8 @@
   <div>
     <input type="submit" value="Confirm Update" name="btnAction" class="btn btn-dark"
            title="Update Concert" />
-  </div>  
+    <input type="hidden" name="concert_to_update" value="<?php echo $recent_data['concert_id']; ?>" />
+  </div>
 
 </form> 
 

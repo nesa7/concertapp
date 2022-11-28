@@ -474,7 +474,7 @@ class controller
             $date_time = $_POST['update_date_time'];
 
             $update_concert_statement = $this->db->mysqli->prepare("UPDATE concert
-                SET venue_id = ?, tour_name = ?, concert_name = ?, date_time = ?
+                SET concert.venue_id = ?, concert.tour_name = ?, concert.concert_name = ?, concert.date_time = ?
                 WHERE concert_id = ?");
             $update_concert_statement->bind_param("isssi", $venue_id, $tour_name, $concert_name, $date_time, $concert_id);
             $update_concert_statement->execute();
