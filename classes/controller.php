@@ -52,6 +52,8 @@ class controller
             case "handlelike":
                 $this->handleLikeFunc();
                 break;
+            case "search":
+                $this->search();
             default:
                 $this->login();
                 break;
@@ -453,5 +455,26 @@ class controller
             }
         }
         header("Location: ?command=mylikes");
+    }
+
+    private function search()
+    {
+        if (isset($_POST["search"])) {
+
+
+            $search = $this->db->mysqli->prepare("SELECT * FROM concert WHERE concert_name LIKE ?");
+            $search->bind_param('s', $concert_name);
+            $search->execute();
+            $search_result = $search->get_result();
+            $result = $search_result->fetch_all();
+            $list_of_concerts = $result;
+            $search->close();
+            echo "sldk;jfsdlkf";
+
+            header("Location: ?command=home");
+        } else {
+            echo "this didn't work";
+            header("Location ?command=login");
+        }
     }
 }
