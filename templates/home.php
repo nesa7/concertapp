@@ -82,22 +82,22 @@
     <div class="container">
       <div class="row" style="background-color: white; border: 1px solid #e5ebf0;">
 
-        <div class="col-8">
+        <div class="col-6">
           <h2>Artist</h2>
         </div>
         <div class="col-sm">
           <h2>When</h2>
         </div>
-        <!-- <div class="col-sm">
-          Tourname
-        </div> -->
+        <div class="col-sm">
+          <h2>Where</h2>
+        </div>
       </div>
 
       <?php foreach ($list_of_concerts as $concert_info) : ?>
 
         <div class="row" style="background-color: white; border: 1px solid #e5ebf0;" onclick="location.href='?command=viewconcert&id=<?= $concert_info['concert_id'] ?>'">
 
-          <div class="col-8">
+          <div class="col-6">
             <h4><?php echo $concert_info['concert_name']; ?></h4>
             <?php echo $concert_info['tour_name']; ?>
           </div>
@@ -105,9 +105,9 @@
             @ <?php echo substr($concert_info['date_time'], 0, 10); ?>
             <?php $date = $concert_info['date_time']; ?>
           </div>
-          <!-- <div class="col-sm">
-            <?php echo $concert_info['tour_name']; ?>
-          </div> -->
+          <div class="col-sm">
+            <h4><?php echo $concert_info['venue_name']; ?></h4>
+          </div>
           <div class="col-sm">
             <form name="like" method="post" action="">
               <input class="btn btn-primary float-end" type="submit" value="Like" />

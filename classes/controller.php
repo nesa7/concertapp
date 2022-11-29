@@ -461,7 +461,7 @@ class controller
     private function search()
     {
         if (isset($_POST["search"])) {
-            $param = "{$_POST['search']}%"; // user input, % allows for similar to results to input, rather than exact match
+            $param = "%{$_POST['search']}%"; // user input, % allows for similar to results to input, rather than exact match
 
 
             $list_of_concerts = $this->db->mysqli->query("CALL searchConcerts2('$param');"); //calling stored procedure w input
