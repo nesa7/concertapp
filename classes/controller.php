@@ -54,6 +54,7 @@ class controller
                 break;
             case "search":
                 $this->search();
+                break;
             default:
                 $this->login();
                 break;
@@ -460,21 +461,16 @@ class controller
     private function search()
     {
         if (isset($_POST["search"])) {
+            $param = "{$_POST['search']}%"; // user input, % allows for similar to results to input, rather than exact match
 
 
-            $search = $this->db->mysqli->prepare("SELECT * FROM concert WHERE concert_name LIKE ?");
-            $search->bind_param('s', $concert_name);
-            $search->execute();
-            $search_result = $search->get_result();
-            $result = $search_result->fetch_all();
-            $list_of_concerts = $result;
-            $search->close();
-            echo "sldk;jfsdlkf";
+            $list_of_concerts = $this->db->mysqli->query("CALL searchConcerts2('$param');"); //calling stored procedure w input
 
-            header("Location: ?command=home");
+            //the rest is handled by the home function!
+
+            include("templates/home.php");
         } else {
             echo "this didn't work";
-            header("Location ?command=login");
         }
     }
 }
