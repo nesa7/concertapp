@@ -36,8 +36,8 @@
 <?php endforeach; ?>
 </ul> -->
 
-    <div class="row justify-content-center">
-      <div class="col-6">
+    <!-- <div class="row justify-content-center">
+      <div class="col-14">
         <?php foreach ($list_of_concerts as $concert_info) : ?>
 
           <div class="row" style="background-color: white; border: 1px solid #e5ebf0;" onclick="location.href='?command=viewconcert&id=<?= $concert_info['concert_id'] ?>'">
@@ -45,21 +45,76 @@
               <h4><?php echo $concert_info['concert_name']; ?></h4>
             </div>
             <div class="col-3">
+              <p class="text-center" style="top:50%"><?php echo $concert_info['tour_name']; ?></p>
+
+            </div>
+            <div class="col-3">
               <p class="text-center" style="top:50%">
                 @ <?php echo substr($concert_info['date_time'], 0, 10); ?>
               </p>
             </div>
             <div class="col-3">
-              <form name="like" method="post" action="?command=handlelike">
+              <form name="like" method="post" action="">
                 <input class="btn btn-primary float-end" type="submit" value="Like" />
-                <input type="hidden" name="current_concert" value="<?php echo $concert_info['concert_id']; ?>" />
-                <input type="hidden" name="liked" value="<?php echo empty($liked); ?>" />
               </form>
             </div>
-
           </div>
         <?php endforeach; ?>
       </div>
+
+    </div> -->
+
+    <!-- here's the search bar! -->
+
+    <div class="container">
+      <form action="?command=search" method="POST">
+        <div class="input-group mb-3">
+          <input type="text" name="search" value="" class="form-control" placeholder="search for an artist or venue...">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </form>
+    </div>
+
+
+    <!-- https://phpdelusions.net/mysqli_examples/search_filter -->
+
+    <!--column headers are here -->
+    <div class="container">
+      <div class="row" style="background-color: white; border: 1px solid #e5ebf0;">
+
+        <div class="col-8">
+          <h2>Artist</h2>
+        </div>
+        <div class="col-sm">
+          <h2>When</h2>
+        </div>
+        <!-- <div class="col-sm">
+          Tourname
+        </div> -->
+      </div>
+
+      <?php foreach ($list_of_concerts as $concert_info) : ?>
+
+        <div class="row" style="background-color: white; border: 1px solid #e5ebf0;" onclick="location.href='?command=viewconcert&id=<?= $concert_info['concert_id'] ?>'">
+
+          <div class="col-8">
+            <h4><?php echo $concert_info['concert_name']; ?></h4>
+            <?php echo $concert_info['tour_name']; ?>
+          </div>
+          <div class="col-sm">
+            @ <?php echo substr($concert_info['date_time'], 0, 10); ?>
+            <?php $date = $concert_info['date_time']; ?>
+          </div>
+          <!-- <div class="col-sm">
+            <?php echo $concert_info['tour_name']; ?>
+          </div> -->
+          <div class="col-sm">
+            <form name="like" method="post" action="">
+              <input class="btn btn-primary float-end" type="submit" value="Like" />
+            </form>
+          </div>
+        </div>
+      <?php endforeach ?>
 
     </div>
 
