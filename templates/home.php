@@ -109,9 +109,10 @@
             <h4><?php echo $concert_info['venue_name']; ?></h4>
           </div>
           <div class="col-sm">
-            <form name="like" method="post" action="">
-              <input class="btn btn-primary float-end" type="submit" value="Like" />
-            </form>
+              <form name="like" method="post" action="?command=handlelike">
+                  <input class="btn btn-primary float-end" type="submit" value="Like"/>
+                  <input type="hidden" name="current_concert" value="<?php echo $concert_info['concert_id']; ?>" />
+                  <input type="hidden" name="liked" value="<?php echo empty($liked); ?>" />
           </div>
         </div>
       <?php endforeach ?>
