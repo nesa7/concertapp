@@ -84,7 +84,7 @@ class controller
                     header("Location: ?command=home");
                 } else {
                     $error_msg = "Wrong password";
-                    echo ("broken");
+                    echo ("Invalid credentials!");
                 }
             }
         }
