@@ -54,6 +54,8 @@ class controller
                 break;
             case "search":
                 $this->search();
+            case "updateconcert":
+                $this->updateConcertFunc();
                 break;
             default:
                 $this->login();
@@ -157,7 +159,7 @@ class controller
                 $recent_data['concert_name'] = $_POST['concert_name'];
                 $recent_data['tour_name'] = $_POST['tour_name'];
                 $recent_data['date_time'] = $_POST['date_time'];
-            } else {
+            else {
                 $display_error = false;
                 $this->addConcert($_POST['venue_id'], $_POST['tour_name'], $_POST['concert_name'], $_POST['date_time']);
                 header("Location: ?command=home"); // redirect to simpleform.php page after submission
@@ -174,7 +176,7 @@ class controller
             $concert_id = $_GET["id"];
 
             $concert_statement = $this->db->mysqli->prepare("SELECT concert.concert_id, concert.concert_name, venue.venue_name, concert.tour_name, concert.date_time
-            FROM concert, venue 
+            FROM concert, venue
             WHERE concert.concert_id = ?
             AND concert.venue_id = venue.venue_id");
             $concert_statement->bind_param('i', $concert_id);
@@ -185,7 +187,7 @@ class controller
 
 
             $artist_statement = $this->db->mysqli->prepare("SELECT artist.artist_name, artist.artist_id
-            FROM artist, concert, performs 
+            FROM artist, concert, performs
             WHERE concert.concert_id = ?
             AND artist.artist_id = performs.artist_id
             AND concert.concert_id = performs.concert_id");
@@ -298,7 +300,7 @@ class controller
             $concert_id = $_POST['this_concert'];
 
             $this_concert_statement = $this->db->mysqli->prepare("SELECT concert.concert_name, concert.concert_id
-            FROM concert 
+            FROM concert
             WHERE concert.concert_id = ?");
             $this_concert_statement->bind_param('s', $concert_id);
             $this_concert_statement->execute();
@@ -454,6 +456,7 @@ class controller
                 $del_like->execute();
                 $del_like->close();
             }
+
         }
         header("Location: ?command=mylikes");
     }
@@ -473,4 +476,39 @@ class controller
             echo "this didn't work";
         }
     }
+}
+    private function updateConcertFunc() {
+
+        // pass in a list of venues to be displayed in the dropdown
+        $list_of_venues = $this->db->query("SELECT venue_id, venue_name FROM venue");
+
+        if (isset($_POST["btnAction"])) {
+
+            $concert_id = $_POST['concert_to_update'];
+            $concert_name = $_POST['update_concert_name'];
+            $venue_id = $_POST['update_venue_id'];
+            $tour_name = $_POST['update_tour_name'];
+            $date_time = $_POST['update_date_time'];
+
+            $update_concert_statement = $this->db->mysqli->prepare("UPDATE concert
+                SET concert.venue_id = ?, concert.tour_name = ?, concert.concert_name = ?, concert.date_time = ?
+                WHERE concert_id = ?");
+            $update_concert_statement->bind_param("isssi", $venue_id, $tour_name, $concert_name, $date_time, $concert_id);
+            $update_concert_statement->execute();
+            $update_concert_statement->close();
+
+            header ("Location: ?command=home"); // redirect to simpleform.php page after submission
+
+        } else {
+            $recent_data = null; // not used unless submission fails
+            $recent_data['concert_id'] = $_POST['concert_to_update'];
+            $recent_data['concert_name'] = $_POST['update_concert_name'];
+            $recent_data['venue_name'] = $_POST['update_venue_name'];
+            $recent_data['tour_name'] = $_POST['update_tour_name'];
+            $recent_data['date_time'] = $_POST['update_date_time'];
+        }
+
+        include("templates/updateConcert.php");
+    }
+
 }
