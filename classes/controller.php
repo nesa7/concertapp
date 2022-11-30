@@ -159,7 +159,8 @@ class controller
                 $recent_data['concert_name'] = $_POST['concert_name'];
                 $recent_data['tour_name'] = $_POST['tour_name'];
                 $recent_data['date_time'] = $_POST['date_time'];
-            else {
+            
+            }else {
                 $display_error = false;
                 $this->addConcert($_POST['venue_id'], $_POST['tour_name'], $_POST['concert_name'], $_POST['date_time']);
                 header("Location: ?command=home"); // redirect to simpleform.php page after submission
@@ -476,7 +477,7 @@ class controller
             echo "this didn't work";
         }
     }
-}
+    
     private function updateConcertFunc() {
 
         // pass in a list of venues to be displayed in the dropdown
