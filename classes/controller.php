@@ -46,6 +46,7 @@ class controller
                 break;
             case "entersong":
                 $this->enterSongFunc();
+                break;
             case "mylikes":
                 $this->likesFunc();
                 break;
@@ -54,6 +55,7 @@ class controller
                 break;
             case "search":
                 $this->search();
+                break;
             case "updateconcert":
                 $this->updateConcertFunc();
                 break;
