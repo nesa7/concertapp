@@ -52,6 +52,8 @@ class controller
             case "handlelike":
                 $this->handleLikeFunc();
                 break;
+            case "search":
+                $this->search();
             case "updateconcert":
                 $this->updateConcertFunc();
                 break;
@@ -80,7 +82,7 @@ class controller
                     header("Location: ?command=home");
                 } else {
                     $error_msg = "Wrong password";
-                    echo("broken");
+                    echo ("broken");
                 }
             }
         }
@@ -90,7 +92,8 @@ class controller
     // To register new users.
     // Prompts for the user's name, email, and a password, and adds them to the database.
     // User then lands on the home page.
-    private function register() {
+    private function register()
+    {
         if (isset($_POST["username"])) {
             $email = $_POST["username"];
             $insert = $this->db->query(
@@ -132,11 +135,9 @@ class controller
         $statementfirst->close();
 
         $statement = $this->db->mysqli->prepare("INSERT INTO concert (concert_id, venue_id, tour_name, concert_name, date_time) VALUES (?, ?, ?, ?, ?)");
-        $statement -> bind_param("iisss", $result, $venue_id, $tour_name, $concert_name, $date_time);
-        $statement -> execute();
+        $statement->bind_param("iisss", $result, $venue_id, $tour_name, $concert_name, $date_time);
+        $statement->execute();
         $statement->close();
-
-
     }
 
 
@@ -158,11 +159,10 @@ class controller
                 $recent_data['concert_name'] = $_POST['concert_name'];
                 $recent_data['tour_name'] = $_POST['tour_name'];
                 $recent_data['date_time'] = $_POST['date_time'];
-            }
             else {
                 $display_error = false;
                 $this->addConcert($_POST['venue_id'], $_POST['tour_name'], $_POST['concert_name'], $_POST['date_time']);
-                header ("Location: ?command=home"); // redirect to simpleform.php page after submission
+                header("Location: ?command=home"); // redirect to simpleform.php page after submission
             }
         }
 
@@ -170,7 +170,8 @@ class controller
     }
 
 
-    private function viewConcertFunc() {
+    private function viewConcertFunc()
+    {
         if (isset($_GET["id"])) {
             $concert_id = $_GET["id"];
 
@@ -250,51 +251,51 @@ class controller
             $check_liked_result = $check_liked->get_result();
             $liked = $check_liked_result->fetch_all();
             $check_liked->close();
-
         }
 
         include("templates/viewConcert.php");
     }
 
 
-    private function addArtistQuery($concert_id, $artist_name, $artist_genre_1, $artist_genre_2) {
-            $statementfirst = $this->db->mysqli->prepare("SELECT MAX(artist_id)+1 FROM artist");
-            $statementfirst->execute();
-            $statementfirst->bind_result($result);
-            $statementfirst->fetch();
-            $statementfirst->close();
+    private function addArtistQuery($concert_id, $artist_name, $artist_genre_1, $artist_genre_2)
+    {
+        $statementfirst = $this->db->mysqli->prepare("SELECT MAX(artist_id)+1 FROM artist");
+        $statementfirst->execute();
+        $statementfirst->bind_result($result);
+        $statementfirst->fetch();
+        $statementfirst->close();
 
 
-            // create new artist
-            $add_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist (artist_id, artist_name) VALUES (?, ?)");
-            $add_artist_statement->bind_param('is', $result, $artist_name);
-            $add_artist_statement->execute();
-            $add_artist_statement->close();
+        // create new artist
+        $add_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist (artist_id, artist_name) VALUES (?, ?)");
+        $add_artist_statement->bind_param('is', $result, $artist_name);
+        $add_artist_statement->execute();
+        $add_artist_statement->close();
 
-            // link artist to concert
-            $link_artist_statement = $this->db->mysqli->prepare("INSERT INTO performs (artist_id, concert_id) VALUES (?, ?)");
-            $link_artist_statement->bind_param('ii', $result, $concert_id);
-            $link_artist_statement->execute();
-            $link_artist_statement->close();
+        // link artist to concert
+        $link_artist_statement = $this->db->mysqli->prepare("INSERT INTO performs (artist_id, concert_id) VALUES (?, ?)");
+        $link_artist_statement->bind_param('ii', $result, $concert_id);
+        $link_artist_statement->execute();
+        $link_artist_statement->close();
 
-            // specify artist genres
-            $genre1_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist_genre (artist_id, genre) VALUES (?, ?)");
-            $genre1_artist_statement->bind_param('is', $result, $artist_genre_1);
-            $genre1_artist_statement->execute();
-            $genre1_artist_statement->close();
+        // specify artist genres
+        $genre1_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist_genre (artist_id, genre) VALUES (?, ?)");
+        $genre1_artist_statement->bind_param('is', $result, $artist_genre_1);
+        $genre1_artist_statement->execute();
+        $genre1_artist_statement->close();
 
-            $genre2_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist_genre (artist_id, genre) VALUES (?, ?)");
-            $genre2_artist_statement->bind_param('is', $result, $artist_genre_2);
-            $genre2_artist_statement->execute();
-            $genre2_artist_statement->close();
+        $genre2_artist_statement = $this->db->mysqli->prepare("INSERT INTO artist_genre (artist_id, genre) VALUES (?, ?)");
+        $genre2_artist_statement->bind_param('is', $result, $artist_genre_2);
+        $genre2_artist_statement->execute();
+        $genre2_artist_statement->close();
 
-            $statement = $this->db->mysqli->prepare("CALL `getConcerts`();");
-            $statement->execute();
-            $statement->close();
-
+        $statement = $this->db->mysqli->prepare("CALL `getConcerts`();");
+        $statement->execute();
+        $statement->close();
     }
 
-    private function addArtistFunc() {
+    private function addArtistFunc()
+    {
         if (isset($_POST['this_concert'])) {
             $concert_id = $_POST['this_concert'];
 
@@ -320,7 +321,8 @@ class controller
     }
 
 
-    private function deleteConcertFunc() {
+    private function deleteConcertFunc()
+    {
         if (isset($_POST["concert_to_delete"])) {
             $concert_id = $_POST["concert_to_delete"];
             $delete_concert_statement = $this->db->mysqli->prepare("DELETE FROM in_setlist WHERE in_setlist.concert_id = ?");
@@ -347,7 +349,8 @@ class controller
         header("Location: ?command=home");
     }
 
-    private function addSongQuery($song_name, $artist_id, $concert_id, $album_name) {
+    private function addSongQuery($song_name, $artist_id, $concert_id, $album_name)
+    {
 
         // get id for new song
         $statementfirst = $this->db->mysqli->prepare("SELECT MAX(song_id)+1 FROM song");
@@ -367,8 +370,7 @@ class controller
             $add_song_statement->bind_param('isi', $result, $song_name, $artist_id);
             $add_song_statement->execute();
             $add_song_statement->close();
-        }
-        else {
+        } else {
             // search for album_name:
             $statementalbum = $this->db->mysqli->prepare("SELECT album.album_id FROM album WHERE album.album_name = ?");
             $statementalbum->bind_param('s', $album_name);
@@ -380,8 +382,7 @@ class controller
             // album already saved in db!
             if ($resultAlbum != "") {
                 $newAlbumId = $resultAlbum;
-            }
-            else {
+            } else {
                 // create a new album
                 $getAlbumId = $this->db->mysqli->prepare("SELECT MAX(album_id)+1 FROM album");
                 $getAlbumId->execute();
@@ -400,7 +401,6 @@ class controller
             $add_song_statement->bind_param('isii', $result, $song_name, $artist_id, $newAlbumId);
             $add_song_statement->execute();
             $add_song_statement->close();
-
         }
 
         // link song to concert
@@ -408,10 +408,10 @@ class controller
         $link_song_concert_statement->bind_param('ii', $result, $concert_id);
         $link_song_concert_statement->execute();
         $link_song_concert_statement->close();
-
     }
 
-    private function enterSongFunc() {
+    private function enterSongFunc()
+    {
         if (isset($_POST["current_artist"])) {
 
             $this->addSongQuery($_POST['song_name'], $_POST['current_artist'], $_POST['current_concert'], $_POST['album_name']);
@@ -420,7 +420,8 @@ class controller
         }
     }
 
-    private function likesFunc() {
+    private function likesFunc()
+    {
         $username = $_SESSION["username"];
 
         $getLikes = $this->db->mysqli->prepare("SELECT concert.concert_name, concert.concert_id FROM likes NATURAL JOIN concert WHERE likes.username = ?");
@@ -433,7 +434,8 @@ class controller
         include("templates/myLikes.php");
     }
 
-    private function handleLikeFunc() {
+    private function handleLikeFunc()
+    {
         if (isset($_POST['current_concert'])) {
             $concert_id = $_POST['current_concert'];
             $liked = $_POST['liked'];
@@ -446,8 +448,7 @@ class controller
                 $add_like->bind_param('si', $username, $concert_id);
                 $add_like->execute();
                 $add_like->close();
-            }
-            else {
+            } else {
                 // unlike concert
                 //print_r("liked not empty");
                 $del_like = $this->db->mysqli->prepare("DELETE FROM likes WHERE username = ? AND concert_id = ?");
@@ -460,6 +461,22 @@ class controller
         header("Location: ?command=mylikes");
     }
 
+    private function search()
+    {
+        if (isset($_POST["search"])) {
+            $param = "%{$_POST['search']}%"; // user input, % allows for similar to results to input, rather than exact match
+
+
+            $list_of_concerts = $this->db->mysqli->query("CALL searchConcerts2('$param');"); //calling stored procedure w input
+
+            //the rest is handled by the home function!
+
+            include("templates/home.php");
+        } else {
+            echo "this didn't work";
+        }
+    }
+}
     private function updateConcertFunc() {
 
         // pass in a list of venues to be displayed in the dropdown
