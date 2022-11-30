@@ -302,6 +302,17 @@
         </form>
     </div>
 
+    <div>
+        <form action="?command=updateconcert" method="POST">
+            <button onclick="window.location.href='?command=updateconcert'" class="btn btn-primary">Update Concert</button>
+            <input type="hidden" name="concert_to_update" value="<?php echo $concert_info['concert_id']; ?>" />
+            <input type="hidden" name="update_concert_name" value="<?php echo $concert_info['concert_name']; ?>" />
+            <input type="hidden" name="update_venue_name" value="<?php echo $concert_info['venue_name']; ?>" />
+            <input type="hidden" name="update_tour_name" value="<?php echo $concert_info['tour_name']; ?>" />
+            <input type="hidden" name="update_date_time" value="<?php echo $concert_info['date_time']; ?>" />
+        </form>
+    </div>
+
 </div>
 
 
